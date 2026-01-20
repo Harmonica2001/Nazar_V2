@@ -128,10 +128,10 @@ def notif():
 
 model_2 = YOLO('yolo11n.pt')
 # settings for Gate_1
-model_1 = YOLO('Nazar_12.pt')
+model_1 = YOLO('Nazar_16.pt')
 model_1.overrides['verbose'] = False  # disable internal logs
 source_1 = 0
-conf_threshold_1 = 0.6
+conf_threshold_1 = 0.65
 # settings for Gate_2
 model_2 = YOLO('yolo11n.pt')
 model_2.overrides['verbose'] = False  # disable internal logs
