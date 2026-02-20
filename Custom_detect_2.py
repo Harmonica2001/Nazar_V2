@@ -9,7 +9,7 @@ from email.message import EmailMessage
 # ---------- EMAIL SETTINGS ----------
 EMAIL_SENDER = "ahmadsyedharoon@gmail.com"
 EMAIL_PASSWORD = "ztvt bwsm asbg kixn"
-EMAIL_RECEIVER = "dipornodip@gmail.com"
+EMAIL_RECEIVER = "mehraabferdouse@gmail.com"
 # ------------------------------------
 
 # ---------------------- USER INPUT ----------------------
@@ -170,8 +170,8 @@ def notif():
     now = datetime.now()
     timestamp = now.strftime("%Y%m%d_%H%M%S")
 
-    folder1_path = r"C:\Users\ahmad\Nazar\instances"
-    folder2_path = r"C:\Users\ahmad\Nazar\instance_logs"
+    folder1_path = r"C:\Users\User\Documents\NAZAR\nazar_v2\Nazar_V2\instances"
+    folder2_path = r"C:\Users\User\Documents\NAZAR\nazar_v2\Nazar_V2\instance_logs"
 
     os.makedirs(folder1_path, exist_ok=True)
     os.makedirs(folder2_path, exist_ok=True)
@@ -195,7 +195,7 @@ model_1.overrides['verbose'] = False
 model_2 = YOLO('yolo11n.pt')
 model_2.overrides['verbose'] = False
 
-conf_threshold_1 = 0.65
+conf_threshold_1 = 0.55
 conf_threshold_2 = 0.7
 
 
