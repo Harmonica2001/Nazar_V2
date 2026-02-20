@@ -6,10 +6,15 @@ from datetime import datetime
 import smtplib
 from email.message import EmailMessage
 
+# ---------- GLOBAL VARIABLES ----------
+item = None
+bbox_coords = None
+gate1_bool = False
+
 # ---------- EMAIL SETTINGS ----------
 EMAIL_SENDER = "ahmadsyedharoon@gmail.com"
 EMAIL_PASSWORD = "ztvt bwsm asbg kixn"
-EMAIL_RECEIVER = "dipornodip@gmail.com"
+EMAIL_RECEIVER = "ahmadsyedharoon@gmail.com"
 # ------------------------------------
 
 # ---------------------- USER INPUT ----------------------
@@ -75,7 +80,7 @@ def gate_1(source, model, conf_threshold):
     item = None
     cap = cv2.VideoCapture(source)
 
-    THINNESS_THRESHOLD = 0.3   # Adjust 0.2–0.4 depending on strictness
+    THINNESS_THRESHOLD = 0.5   # Adjust 0.2–0.4 depending on strictness
 
     while True:
         ret, frame = cap.read()
@@ -98,6 +103,8 @@ def gate_1(source, model, conf_threshold):
                 if class_name == "knife":
 
                     x1, y1, x2, y2 = map(float, box.xyxy[0])
+                    global bbox_coords
+                    bbox_coords = (int(x1), int(y1), int(x2), int(y2))
                     width = x2 - x1
                     height = y2 - y1
 
@@ -181,7 +188,7 @@ def gate_2(source, model, conf_threshold):
 # ---------------------- SAVE EVENT ----------------------
 
 def notif():
-    global item
+    global item, bbox_coords
 
     if not SAVE_DATA:
         print("⚠ Data saving disabled — skipping log & snapshot.")
@@ -189,8 +196,30 @@ def notif():
 
     cap = cv2.VideoCapture(source_input)
     ret, frame = cap.read()
+    cap.release()
+
+    if not ret:
+        print("Failed to capture frame.")
+        return
 
     print(f"Human with {item} in possession")
+
+    # ---------------- DRAW BOUNDING BOX ----------------
+    if bbox_coords is not None:
+        x1, y1, x2, y2 = bbox_coords
+
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
+
+        label = f"{item.upper()}"
+        cv2.putText(frame,
+                    label,
+                    (x1, y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (0, 0, 255),
+                    2)
+
+    # ---------------------------------------------------
 
     now = datetime.now()
     timestamp = now.strftime("%Y%m%d_%H%M%S")
@@ -210,6 +239,7 @@ def notif():
 
     print(f"Image saved: {image_path}")
     print(f"Log saved:   {log_path}")
+
     send_email_alert(image_path, item)
 
 # ---------------------- MODELS ----------------------
